@@ -1,0 +1,46 @@
+body {
+    margin: 20px;
+    padding: 0;
+    width: 200px;
+    height: 200px;
+    text-align: left;
+    background-color: white;
+    cursor: default;
+    font-family: Arial, serif;
+    font-size: 16px;
+    line-height: 1.4;
+}
+.main {
+    align-items: center;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    color: black;
+    list-style-type: none;
+}
+
+i {
+    margin-right: 10px;
+}
+
+.shift {
+    color: gray;
+}
+
+.shift-optional{
+    color: darkgray;
+    margin: 0;
+}
+
+.bi.bi-shift {
+    margin: 0;
+}
+
+.tg {
+    text-align: right;
+    font-size: 12px;
+    margin: 10px 0;
+    color: lightgrey;
+}
