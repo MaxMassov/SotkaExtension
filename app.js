@@ -112,15 +112,11 @@ function applyStyles() {
         const {height, width} = element.style;
         localStorage.setItem('contentListBodyHeight', height);
         localStorage.setItem('contentListBodyWidth', width);
-
-        console.log('settings saved')
     };
 
     const loadDimensions = (element) => {
         const savedHeight = localStorage.getItem('contentListBodyHeight');
         const savedWidth = localStorage.getItem('contentListBodyWidth');
-        console.log('settings loaded: ' + savedHeight + ' ' + savedWidth);
-
         element.style.height = savedHeight || '45rem';
         element.style.width = savedWidth || '50rem';
     };
@@ -131,6 +127,7 @@ function applyStyles() {
         element.style.minHeight = '37rem';
         element.style.minWidth = '40rem';
         element.style.maxHeight = '100%';
+        element.style.paddingBottom = '5rem';
         element.style.maxWidth = '100%';
         element.style.maxHeight = '80vh';
 
@@ -143,20 +140,18 @@ function applyStyles() {
 
     const modalDialogElements = document.querySelectorAll('.modal-dialog');
     modalDialogElements.forEach(function (element) {
-        Object.assign(element.style, {
-            maxWidth: '90%',
-            width: 'auto',
-            height: 'auto',
-            display: 'flex',
-            justifyContent: 'center',
-            minWidth: '40rem',
-        });
+        element.style.maxWidth = '90%'
+        element.style.width = 'auto'
+        element.style.height = 'auto'
+        element.style.display = 'flex'
+        element.style.justifyContent = 'center'
+        element.style.minWidth = '40rem'
     });
 
     const modalContentElements = document.querySelectorAll('.modal-content');
     modalContentElements.forEach(function (element) {
         element.style.width = 'auto';
-        element.style.maxHeight = '90vh';
+        element.style.maxHeight = '95vh';
         element.style.maxWidth = '90vw';
         element.style.minWidth = '40rem';
     });
