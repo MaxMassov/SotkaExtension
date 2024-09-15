@@ -68,8 +68,9 @@ https://github.com/user-attachments/assets/8043342c-9e8c-46e8-a7db-eb26f49a4069
 [![Static Badge](https://img.shields.io/badge/download-yandex_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/release/SotkaExtension-yandex.zip)
 
 Для Яндекс Браузера процесс очень простой.
-1) Откройте вкладку "Расширения"
-2) Перетащите файл расширения в окно браузера
+1) Распакуйте архив в удобное место
+2) Откройте вкладку "Расширения"
+3) Перетащите файл расширения в окно браузера
 
 ![photo_2024-09-15_13-24-52](https://github.com/user-attachments/assets/e91cd804-4259-4aa5-9c6e-2f0132c9bc9d)
 
@@ -79,8 +80,8 @@ https://github.com/user-attachments/assets/8043342c-9e8c-46e8-a7db-eb26f49a4069
 
 С гуглом немножечко больше действий:
 
-1) Откройте вкладку расширений в хроме. Это можно сделать по этому адресу: [chrome://extensions/](chrome://extensions/)
-2) Распакуйте архив в удобное место
+1) Распакуйте архив в удобное место
+2) Откройте вкладку расширений в хроме. Это можно сделать по этому адресу: [chrome://extensions/](chrome://extensions/)
 3) Включите режим разработчика
 4) Загрузите расширение (нужно будет указать путь к папке, куда вы распаковали архив)
    
