@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "SotkaExtension",
-	"version": "1.1",
+	"version": "1.2",
 	"description": "Удобный инструмент для проверки домашек😊\nby @milkylake",
     "author": {
       "tg": "@milkylake",
