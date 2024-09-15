@@ -1,1 +1,8 @@
-.idea
+# folders
+/.idea
+/SotkaExtension
+
+# files
+SotkaExtension.crx
+SotkaExtension.pem
+SotkaExtension.zip
