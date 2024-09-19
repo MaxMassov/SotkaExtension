@@ -204,4 +204,68 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 			clickCloseButton();
 		}
 	});
+	
+	let selectedStudentId = '';
+	let selectedHWId = '';
+	let selectedTaskId = '';
+
+	// Обработчик клика для таблицы учеников (делегирование события)
+	document.addEventListener('click', (event) => {
+		// Проверяем, что клик произошел по строке ученика
+		if (event.target.closest('.contentList .answers__row')) {
+			const row = event.target.closest('.contentList .answers__row');
+			selectedStudentId = row.querySelector('.answers__cell').textContent.trim();
+			
+			selectedHWId = ''
+			selectedTaskId = ''
+			copyToClipboard('').catch((e) => console.error(e))
+		}
+
+		// Проверяем, что клик произошел по строке домашней работы
+		if (event.target.closest('div.col-12 .answerList .answers__row')) {
+			const row = event.target.closest('.answerList .answers__row');
+			selectedHWId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
+
+			if (selectedHWId === null || selectedHWId === '') {
+				selectedHWId = '***';
+			}
+			
+			selectedTaskId = ''
+			copyToClipboard('').catch((e) => console.error(e))
+		}
+
+		if (event.target.closest('div.col .answerList .answers__row')) {
+			const row = event.target.closest('.answerList .answers__row');
+			selectedTaskId = row.querySelector('.answers__cell').textContent.trim();
+			selectedTaskId = formatDateTime(selectedTaskId)
+			
+			copyToClipboard(`${selectedHWId} ${selectedStudentId} ${selectedTaskId}`)
+				.catch((e) => console.error(e))
+		}
+	});
+}
+
+
+function formatDateTime(input) {
+	const regex = /дата:\s(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/;
+	const match = input.match(regex);
+
+	if (match) {
+		const [_, year, month, day, hours, minutes] = match;
+
+		const formattedDate = `${day}.${month}.${year}`;
+		const formattedTime = `${hours}:${minutes}`;
+
+		return `${formattedDate} ${formattedTime}`;
+	} else {
+		return '';
+	}
+}
+
+async function copyToClipboard(text) {
+	try {
+		await navigator.clipboard.writeText(text);
+	} catch (err) {
+		console.error('Failed to copy:', err);
+	}
 }
