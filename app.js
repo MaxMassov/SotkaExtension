@@ -186,7 +186,7 @@ if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
 	let img = document.querySelector('img');
 	let image = new ImageProperties(img);
 	initImageKeyHandler(image);
-} 
+}
 
 if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 	applyStyles();
@@ -205,6 +205,69 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 		}
 	});
 	
+	const targetDiv = document.querySelector('div.col-12.mb-3')
+	targetDiv.style.display = 'flex';
+	targetDiv.style.justifyContent = 'space-between';
+	console.log(targetDiv)
+
+	const button = document.createElement('button');
+	button.innerText = 'копировать тайминг';
+	button.style.display = 'flex';
+	button.style.justifyContent = 'center';
+	button.style.position = 'relative';
+	button.style.padding = '7px 20px';
+	button.style.backgroundColor = '#55a62d';
+	button.style.borderRadius = '0.375rem';
+	button.style.color = 'white';
+	button.style.border = 'none';
+	button.style.cursor = 'pointer';
+	button.style.zIndex = '1000';
+	button.style.transition = 'transform 0.2s ease';
+	button.style.opacity = '0';
+	button.style.cursor = 'default';
+
+	button.onclick = () => copyToClipboard(`${selectedHWId} ${selectedStudentId} ${selectedTaskId}`)
+		.catch((e) => console.error(e));
+	
+	targetDiv.appendChild(button)
+	
+	const message = document.createElement('div');
+	message.innerText = 'Скопировано';
+	message.style.position = 'absolute';
+	message.style.top = '-46px';
+	message.style.padding = '7px 20px';
+	message.style.backgroundColor = '#333';
+	message.style.color = '#fff';
+	message.style.borderRadius = '10px';
+	message.style.opacity = '0'; // Изначально скрываем
+	message.style.transition = 'opacity 0.5s ease';
+	message.style.zIndex = '1000';
+
+	button.appendChild(message);
+	
+	button.addEventListener('mouseover', function() {
+		button.style.backgroundColor = '#3e8e41';
+	});
+
+	button.addEventListener('mouseout', function() {
+		button.style.backgroundColor = '#55a62d';
+	});
+
+	button.addEventListener('mousedown', function() {
+		button.style.transform = 'translateY(4px)';
+	});
+
+	button.addEventListener('mouseup', function() {
+		button.style.transform = 'translateY(0)';
+		message.style.opacity = '1';
+		
+		setTimeout(function() {
+			message.style.opacity = '0';
+		}, 1000);
+	});
+	
+	
+
 	let selectedStudentId = '';
 	let selectedHWId = '';
 	let selectedTaskId = '';
@@ -215,10 +278,12 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 		if (event.target.closest('.contentList .answers__row')) {
 			const row = event.target.closest('.contentList .answers__row');
 			selectedStudentId = row.querySelector('.answers__cell').textContent.trim();
-			
-			selectedHWId = ''
-			selectedTaskId = ''
-			copyToClipboard('').catch((e) => console.error(e))
+
+			selectedHWId = '';
+			selectedTaskId = '';
+
+			button.style.opacity = '0';
+			button.style.cursor = 'default';
 		}
 
 		// Проверяем, что клик произошел по строке домашней работы
@@ -229,22 +294,20 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 			if (selectedHWId === null || selectedHWId === '') {
 				selectedHWId = '***';
 			}
-			
-			selectedTaskId = ''
-			copyToClipboard('').catch((e) => console.error(e))
+
+			selectedTaskId = '';
+
+			button.style.opacity = '1';
+			button.style.cursor = 'pointer';
 		}
 
 		if (event.target.closest('div.col .answerList .answers__row')) {
 			const row = event.target.closest('.answerList .answers__row');
 			selectedTaskId = row.querySelector('.answers__cell').textContent.trim();
-			selectedTaskId = formatDateTime(selectedTaskId)
-			
-			copyToClipboard(`${selectedHWId} ${selectedStudentId} ${selectedTaskId}`)
-				.catch((e) => console.error(e))
+			selectedTaskId = formatDateTime(selectedTaskId);
 		}
 	});
 }
-
 
 function formatDateTime(input) {
 	const regex = /дата:\s(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/;
