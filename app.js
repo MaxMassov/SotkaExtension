@@ -198,140 +198,109 @@ function initializeResizeObservers() {
 }
 
 
-// Main
 
-if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
-	let img = document.querySelector('img');
-	let image = new ImageProperties(img);
-	initImageKeyHandler(image);
-}
+// copy timing button
 
-if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/verifier')) {
-	setModalStyles();
-	closeModalOnEscape();
-	initializeResizeObservers();
-
-
+function getMainHeader() {
 	const mainHeader = document.querySelector('div.col-12.mb-3');
 	mainHeader.style.display = 'flex';
 	mainHeader.style.justifyContent = 'space-between';
+	
+	return mainHeader;
+}
 
-	const button = document.createElement('button');
-	button.innerText = 'Копировать тайминг';
-	button.style.display = 'flex';
-	button.style.justifyContent = 'center';
-	button.style.position = 'relative';
-	button.style.padding = '7px 20px';
-	button.style.backgroundColor = '#55a62d';
-	button.style.borderRadius = '0.375rem';
-	button.style.color = 'white';
-	button.style.border = 'none';
-	button.style.cursor = 'pointer';
-	button.style.zIndex = '1000';
-	button.style.transition = 'transform 0.2s ease';
-	button.style.opacity = '0';
-	button.style.cursor = 'default';
+class CopyTimingButton {
+	constructor(parentElement) {
+		this.button = document.createElement('button');
+		this.applyButtonStyles();
+		this.initMessage();
+		this.addEventListeners();
+		this.button.onclick = () => this
+			.copyTimingToClipboard()
+			.catch((e) => console.error(e));
 
-	button.onclick = () => copyToClipboard(`${selectedHWId} ${selectedStudentId} ${selectedTaskId}`)
-		.catch((e) => console.error(e));
-
-	mainHeader.appendChild(button);
-
-	const message = document.createElement('div');
-	message.innerText = 'Скопировано!';
-	message.style.position = 'absolute';
-	message.style.top = '-46px';
-	message.style.padding = '7px 20px';
-	message.style.backgroundColor = '#333';
-	message.style.color = '#fff';
-	message.style.borderRadius = '10px';
-	message.style.opacity = '0'; // Изначально скрываем
-	message.style.transition = 'opacity 0.5s ease';
-	message.style.zIndex = '1000';
-
-	button.appendChild(message);
-
-	button.addEventListener('mouseover', function() {
-		button.style.backgroundColor = '#3e8e41';
-	});
-
-	button.addEventListener('mouseout', function() {
-		button.style.backgroundColor = '#55a62d';
-	});
-
-	button.addEventListener('mousedown', function() {
-		button.style.transform = 'translateY(4px)';
-	});
-
-	button.addEventListener('mouseup', function() {
-		button.style.transform = 'translateY(0)';
-		message.style.opacity = '1';
-
-		setTimeout(function() {
-			message.style.opacity = '0';
-		}, 1000);
-	});
-
-
-	let selectedStudentId = '';
-	let selectedHWId = '';
-	let selectedTaskId = '';
-
-	document.addEventListener('click', (event) => {
-		if (event.target.closest('button.btn.btn-sm')) {
-			button.style.opacity = '0';
-			button.style.cursor = 'default';
+		this.timing = {
+			studentId: '',
+			hwId: '',
+			hwDateTime: ''
 		}
+		
+		parentElement.appendChild(this.button);
+	}
+	
+	applyButtonStyles() {
+		this.button.innerText = 'Копировать тайминг';
+		this.button.style.display = 'flex';
+		this.button.style.justifyContent = 'center';
+		this.button.style.position = 'relative';
+		this.button.style.padding = '7px 20px';
+		this.button.style.backgroundColor = '#55a62d';
+		this.button.style.borderRadius = '0.375rem';
+		this.button.style.color = 'white';
+		this.button.style.border = 'none';
+		this.button.style.cursor = 'pointer';
+		this.button.style.zIndex = '1000';
+		this.button.style.transition = 'transform 0.2s ease';
+		this.button.style.opacity = '0';
+		this.button.style.cursor = 'default';
+	}
+	
+	initMessage() {
+		this.message = document.createElement('div');
+		this.message.innerText = 'Скопировано!';
+		this.message.style.position = 'absolute';
+		this.message.style.top = '-46px';
+		this.message.style.padding = '7px 20px';
+		this.message.style.backgroundColor = '#333';
+		this.message.style.color = '#fff';
+		this.message.style.borderRadius = '10px';
+		this.message.style.opacity = '0';
+		this.message.style.transition = 'opacity 0.5s ease';
+		this.message.style.zIndex = '1000';
+		this.button.appendChild(this.message);
+	}
 
-		if (event.target.closest('.contentList .answers__row')) {
-			const row = event.target.closest('.contentList .answers__row');
-			selectedStudentId = row.querySelector('.answers__cell').textContent.trim();
+	addEventListeners() {
+		this.button.addEventListener('mouseover', () => {
+			this.button.style.backgroundColor = '#3e8e41';
+		});
 
-			selectedHWId = '';
-			selectedTaskId = '';
+		this.button.addEventListener('mouseout', () => {
+			this.button.style.backgroundColor = '#55a62d';
+		});
 
-			button.style.opacity = '0';
-			button.style.cursor = 'default';
+		this.button.addEventListener('mousedown', () => {
+			this.button.style.transform = 'translateY(4px)';
+		});
+
+		this.button.addEventListener('mouseup', () => {
+			this.button.style.transform = 'translateY(0)';
+			this.message.style.opacity = '1';
+			
+			setTimeout(() => {
+				this.message.style.opacity = '0';
+			}, 1000);
+		});
+	}
+	
+	setInvisible() {
+		this.button.style.opacity = '0';
+		this.button.style.cursor = 'default';
+	}
+	
+	setVisible() {
+		this.button.style.opacity = '1';
+		this.button.style.cursor = 'pointer';
+	}
+
+	async copyTimingToClipboard() {
+		try {
+			const timing = `${this.timing.hwId} ${this.timing.studentId} ${this.timing.hwDateTime}`;
+			await navigator.clipboard.writeText(timing);
+		} catch (err) {
+			console.error('Failed to copy:', err);
 		}
-
-		if (event.target.closest('div.col-12 .answerList .answers__row')) {
-			if (selectedHWId !== '') {
-				button.style.opacity = '0';
-				button.style.cursor = 'default';
-			}
-
-			const row = event.target.closest('.answerList .answers__row');
-			selectedHWId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
-
-			if (selectedHWId === null || selectedHWId === '') {
-				selectedHWId = '***';
-			}
-
-			selectedTaskId = '';
-
-
-			//TODO: переделать в нормальный цикл
-			setTimeout(function() {
-
-				let answer = document.querySelectorAll('div.col .answers tr');
-
-				if (answer.length === 0) {
-					setTimeout(function() {
-						answer = document.querySelectorAll('div.col .answers tr');
-					}, 1000);
-				}
-
-				const dateTime = answer[answer.length - 1].textContent.trim();
-
-				if (dateTime !== undefined && dateTime !== null && dateTime !== '') {
-					selectedTaskId = formatDateTime(dateTime);
-					console.log(selectedTaskId);
-					button.style.opacity = '1';
-					button.style.cursor = 'pointer';
-				}
-			}, 500);
-		}
-	});
+	}
 }
 
 function formatDateTime(input) {
@@ -350,10 +319,74 @@ function formatDateTime(input) {
 	}
 }
 
-async function copyToClipboard(text) {
-	try {
-		await navigator.clipboard.writeText(text);
-	} catch (err) {
-		console.error('Failed to copy:', err);
-	}
+
+
+// Main
+
+if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
+	let img = document.querySelector('img');
+	let image = new ImageProperties(img);
+	initImageKeyHandler(image);
 }
+
+if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/verifier')) {
+	setModalStyles();
+	closeModalOnEscape();
+	initializeResizeObservers();
+	
+	const mainHeader = getMainHeader()
+	const copyTimingButton = new CopyTimingButton(mainHeader);
+	
+	
+	
+	
+	document.addEventListener('click', (event) => {
+		if (event.target.closest('button.btn.btn-sm')) {
+			copyTimingButton.setInvisible()
+		}
+
+		if (event.target.closest('.contentList .answers__row')) {
+			const row = event.target.closest('.contentList .answers__row');
+			copyTimingButton.timing.studentId = row.querySelector('.answers__cell').textContent.trim();
+			copyTimingButton.timing.hwId = '';
+			copyTimingButton.timing.hwDateTime = '';
+
+			copyTimingButton.setInvisible()
+		}
+
+		if (event.target.closest('div.col-12 .answerList .answers__row')) {
+			if (copyTimingButton.timing.hwId !== '') {
+				copyTimingButton.setInvisible()
+			}
+
+			const row = event.target.closest('.answerList .answers__row');
+			copyTimingButton.timing.hwId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
+
+			if (copyTimingButton.timing.hwId === null || copyTimingButton.timing.hwId === '') {
+				copyTimingButton.timing.hwId = '***';
+			}
+
+			copyTimingButton.timing.HWDateTime = '';
+
+			//TODO: переделать в нормальный цикл
+			setTimeout(function() {
+
+				let answer = document.querySelectorAll('div.col .answers tr');
+
+				if (answer.length === 0) {
+					setTimeout(function() {
+						answer = document.querySelectorAll('div.col .answers tr');
+					}, 1000);
+				}
+
+				const dateTime = answer[answer.length - 1].textContent.trim();
+
+				if (dateTime !== undefined && dateTime !== null && dateTime !== '') {
+					copyTimingButton.timing.hwDateTime = formatDateTime(dateTime);
+					copyTimingButton.setVisible()
+				}
+			}, 500);
+		}
+	});
+}
+
