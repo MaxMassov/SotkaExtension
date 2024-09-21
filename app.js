@@ -1,3 +1,5 @@
+// Image manipulation
+
 class ImageProperties {
 	#properties;
 	#originImage;
@@ -103,7 +105,10 @@ function initImageKeyHandler(image) {
 	});
 }
 
-function applyStyles() {
+
+// Resizable modal and editor
+
+function setModalStyles() {
 	const saveDimensions = (element) => {
 		const { height, width } = element.style;
 		localStorage.setItem('contentListBodyHeight', height);
@@ -171,16 +176,29 @@ function syncModalHeaderWidth() {
 	});
 }
 
-function clickCloseButton() {
-	const closeButton = document.querySelector('.btn.btn-close.text-sm');
-	if (closeButton) {
-		closeButton.click();
-	}
+function closeModalOnEscape() {
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
+			const closeButton = document.querySelector('.btn.btn-close.text-sm');
+			if (closeButton) {
+				closeButton.click();
+			}
+		}
+	});
+}
+
+function initializeResizeObservers() {
+	const resizeObserver = new ResizeObserver(syncModalHeaderWidth);
+
+	const editorObserver = new ResizeObserver(editorResizable);
+	document.querySelectorAll('.modal-body .contentList__body').forEach((contentBody) => {
+		resizeObserver.observe(contentBody);
+		editorObserver.observe(contentBody);
+	});
 }
 
 
 // Main
-
 
 if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
 	let img = document.querySelector('img');
@@ -189,28 +207,17 @@ if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
 }
 
 if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/verifier')) {
-	applyStyles();
+	setModalStyles();
+	closeModalOnEscape();
+	initializeResizeObservers();
 
-	const resizeObserver = new ResizeObserver(syncModalHeaderWidth);
-	const editorObserver = new ResizeObserver(editorResizable);
 
-	document.querySelectorAll('.modal-body .contentList__body').forEach((contentBody) => {
-		resizeObserver.observe(contentBody);
-		editorObserver.observe(contentBody);
-	});
-
-	document.addEventListener('keydown', (event) => {
-		if (event.key === 'Escape') {
-			clickCloseButton();
-		}
-	});
-	
-	const targetDiv = document.querySelector('div.col-12.mb-3')
-	targetDiv.style.display = 'flex';
-	targetDiv.style.justifyContent = 'space-between';
+	const mainHeader = document.querySelector('div.col-12.mb-3');
+	mainHeader.style.display = 'flex';
+	mainHeader.style.justifyContent = 'space-between';
 
 	const button = document.createElement('button');
-	button.innerText = 'копировать тайминг';
+	button.innerText = 'Копировать тайминг';
 	button.style.display = 'flex';
 	button.style.justifyContent = 'center';
 	button.style.position = 'relative';
@@ -227,11 +234,11 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/veri
 
 	button.onclick = () => copyToClipboard(`${selectedHWId} ${selectedStudentId} ${selectedTaskId}`)
 		.catch((e) => console.error(e));
-	
-	targetDiv.appendChild(button)
-	
+
+	mainHeader.appendChild(button);
+
 	const message = document.createElement('div');
-	message.innerText = 'Скопировано';
+	message.innerText = 'Скопировано!';
 	message.style.position = 'absolute';
 	message.style.top = '-46px';
 	message.style.padding = '7px 20px';
@@ -243,7 +250,7 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/veri
 	message.style.zIndex = '1000';
 
 	button.appendChild(message);
-	
+
 	button.addEventListener('mouseover', function() {
 		button.style.backgroundColor = '#3e8e41';
 	});
@@ -259,19 +266,23 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/veri
 	button.addEventListener('mouseup', function() {
 		button.style.transform = 'translateY(0)';
 		message.style.opacity = '1';
-		
+
 		setTimeout(function() {
 			message.style.opacity = '0';
 		}, 1000);
 	});
-	
-	
+
 
 	let selectedStudentId = '';
 	let selectedHWId = '';
 	let selectedTaskId = '';
 
 	document.addEventListener('click', (event) => {
+		if (event.target.closest('button.btn.btn-sm')) {
+			button.style.opacity = '0';
+			button.style.cursor = 'default';
+		}
+
 		if (event.target.closest('.contentList .answers__row')) {
 			const row = event.target.closest('.contentList .answers__row');
 			selectedStudentId = row.querySelector('.answers__cell').textContent.trim();
@@ -288,7 +299,7 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/veri
 				button.style.opacity = '0';
 				button.style.cursor = 'default';
 			}
-			
+
 			const row = event.target.closest('.answerList .answers__row');
 			selectedHWId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
 
@@ -298,22 +309,22 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/veri
 
 			selectedTaskId = '';
 
-			
+
 			//TODO: переделать в нормальный цикл
 			setTimeout(function() {
-				
-				let answer = document.querySelectorAll('div.col .answers tr')
-				
+
+				let answer = document.querySelectorAll('div.col .answers tr');
+
 				if (answer.length === 0) {
 					setTimeout(function() {
-						answer = document.querySelectorAll('div.col .answers tr')
+						answer = document.querySelectorAll('div.col .answers tr');
 					}, 1000);
 				}
-				
-				const dateTime = answer[answer.length - 1].textContent.trim()
-				
+
+				const dateTime = answer[answer.length - 1].textContent.trim();
+
 				if (dateTime !== undefined && dateTime !== null && dateTime !== '') {
-					selectedTaskId = formatDateTime(dateTime)
+					selectedTaskId = formatDateTime(dateTime);
 					console.log(selectedTaskId);
 					button.style.opacity = '1';
 					button.style.cursor = 'pointer';
