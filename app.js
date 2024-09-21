@@ -188,7 +188,7 @@ if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
 	initImageKeyHandler(image);
 }
 
-if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
+if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/verifier')) {
 	applyStyles();
 
 	const resizeObserver = new ResizeObserver(syncModalHeaderWidth);
@@ -208,7 +208,6 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 	const targetDiv = document.querySelector('div.col-12.mb-3')
 	targetDiv.style.display = 'flex';
 	targetDiv.style.justifyContent = 'space-between';
-	console.log(targetDiv)
 
 	const button = document.createElement('button');
 	button.innerText = 'копировать тайминг';
@@ -272,9 +271,7 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 	let selectedHWId = '';
 	let selectedTaskId = '';
 
-	// Обработчик клика для таблицы учеников (делегирование события)
 	document.addEventListener('click', (event) => {
-		// Проверяем, что клик произошел по строке ученика
 		if (event.target.closest('.contentList .answers__row')) {
 			const row = event.target.closest('.contentList .answers__row');
 			selectedStudentId = row.querySelector('.answers__cell').textContent.trim();
@@ -286,8 +283,12 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 			button.style.cursor = 'default';
 		}
 
-		// Проверяем, что клик произошел по строке домашней работы
 		if (event.target.closest('div.col-12 .answerList .answers__row')) {
+			if (selectedHWId !== '') {
+				button.style.opacity = '0';
+				button.style.cursor = 'default';
+			}
+			
 			const row = event.target.closest('.answerList .answers__row');
 			selectedHWId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
 
@@ -297,14 +298,27 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/')) {
 
 			selectedTaskId = '';
 
-			button.style.opacity = '1';
-			button.style.cursor = 'pointer';
-		}
-
-		if (event.target.closest('div.col .answerList .answers__row')) {
-			const row = event.target.closest('.answerList .answers__row');
-			selectedTaskId = row.querySelector('.answers__cell').textContent.trim();
-			selectedTaskId = formatDateTime(selectedTaskId);
+			
+			//TODO: переделать в нормальный цикл
+			setTimeout(function() {
+				
+				let answer = document.querySelectorAll('div.col .answers tr')
+				
+				if (answer.length === 0) {
+					setTimeout(function() {
+						answer = document.querySelectorAll('div.col .answers tr')
+					}, 1000);
+				}
+				
+				const dateTime = answer[answer.length - 1].textContent.trim()
+				
+				if (dateTime !== undefined && dateTime !== null && dateTime !== '') {
+					selectedTaskId = formatDateTime(dateTime)
+					console.log(selectedTaskId);
+					button.style.opacity = '1';
+					button.style.cursor = 'pointer';
+				}
+			}, 500);
 		}
 	});
 }
