@@ -198,18 +198,23 @@ function initializeResizeObservers() {
 }
 
 
-
 // copy timing button
 
 function getMainHeader() {
 	const mainHeader = document.querySelector('div.col-12.mb-3');
 	mainHeader.style.display = 'flex';
 	mainHeader.style.justifyContent = 'space-between';
-	
+
 	return mainHeader;
 }
 
 class CopyTimingButton {
+	timing = {
+		studentId: '',
+		hwId: '',
+		dateTime: '',
+	};
+
 	constructor(parentElement) {
 		this.button = document.createElement('button');
 		this.applyButtonStyles();
@@ -219,15 +224,9 @@ class CopyTimingButton {
 			.copyTimingToClipboard()
 			.catch((e) => console.error(e));
 
-		this.timing = {
-			studentId: '',
-			hwId: '',
-			hwDateTime: ''
-		}
-		
 		parentElement.appendChild(this.button);
 	}
-	
+
 	applyButtonStyles() {
 		this.button.innerText = 'Копировать тайминг';
 		this.button.style.display = 'flex';
@@ -244,7 +243,7 @@ class CopyTimingButton {
 		this.button.style.opacity = '0';
 		this.button.style.cursor = 'default';
 	}
-	
+
 	initMessage() {
 		this.message = document.createElement('div');
 		this.message.innerText = 'Скопировано!';
@@ -276,18 +275,18 @@ class CopyTimingButton {
 		this.button.addEventListener('mouseup', () => {
 			this.button.style.transform = 'translateY(0)';
 			this.message.style.opacity = '1';
-			
+
 			setTimeout(() => {
 				this.message.style.opacity = '0';
 			}, 1000);
 		});
 	}
-	
+
 	setInvisible() {
 		this.button.style.opacity = '0';
 		this.button.style.cursor = 'default';
 	}
-	
+
 	setVisible() {
 		this.button.style.opacity = '1';
 		this.button.style.cursor = 'pointer';
@@ -295,7 +294,7 @@ class CopyTimingButton {
 
 	async copyTimingToClipboard() {
 		try {
-			const timing = `${this.timing.hwId} ${this.timing.studentId} ${this.timing.hwDateTime}`;
+			const timing = `${this.timing.hwId} ${this.timing.studentId} ${this.timing.dateTime}`;
 			await navigator.clipboard.writeText(timing);
 		} catch (err) {
 			console.error('Failed to copy:', err);
@@ -319,11 +318,74 @@ function formatDateTime(input) {
 	}
 }
 
+function handleClickEvents(event, copyTimingButton) {
+	if (event.target.closest('button.btn.btn-sm')) {
+		copyTimingButton.setInvisible();
+	}
+
+	if (event.target.closest('.contentList .answers__row')) {
+		handleClickStudentList(event, copyTimingButton);
+	}
+	
+	if (event.target.closest('div.col-12 .answerList .answers__row')) {
+		handleClickHWList(event, copyTimingButton);
+	}
+}
+
+function handleClickStudentList(event, copyTimingButton) {
+	const row = event.target.closest('.contentList .answers__row');
+	copyTimingButton.timing.studentId = row.querySelector('.answers__cell').textContent.trim();
+	copyTimingButton.timing.hwId = '';
+	copyTimingButton.timing.dateTime = '';
+
+	copyTimingButton.setInvisible();
+}
+
+function handleClickHWList(event, copyTimingButton) {
+	if (copyTimingButton.timing.hwId !== '') {
+		copyTimingButton.setInvisible();
+	}
+
+	const row = event.target.closest('.answerList .answers__row');
+	copyTimingButton.timing.hwId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
+
+	if (copyTimingButton.timing.hwId === null || copyTimingButton.timing.hwId === '') {
+		copyTimingButton.timing.hwId = '***';
+	}
+
+	copyTimingButton.timing.dateTime = '';
+	searchDateTime(copyTimingButton);
+}
+
+function searchDateTime(copyTimingButton) {
+	let attempts = 0;
+	const maxAttempts = 10;
+	const intervalId = setInterval(() => {
+		let answer = document.querySelectorAll('div.col .answers tr');
+
+		if (answer.length >= 2) {
+			const dateTime = answer[answer.length - 1].textContent.trim();
+
+			if (dateTime && dateTime !== '') {
+				copyTimingButton.timing.dateTime = formatDateTime(dateTime);
+				copyTimingButton.setVisible();
+				clearInterval(intervalId);
+			}
+		}
+
+		attempts += 1;
+		if (attempts >= maxAttempts) {
+			clearInterval(intervalId);
+			console.error('Homework date and time not found');
+		}
+	}, 1000);
+}
+
 
 
 // Main
 
-if (window.location.href.includes('platform.sotkaonline.ru/storage')) {
+if (window.location.href.includes('https://platform.sotkaonline.ru/storage')) {
 	let img = document.querySelector('img');
 	let image = new ImageProperties(img);
 	initImageKeyHandler(image);
@@ -333,60 +395,8 @@ if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/veri
 	setModalStyles();
 	closeModalOnEscape();
 	initializeResizeObservers();
-	
-	const mainHeader = getMainHeader()
+
+	const mainHeader = getMainHeader();
 	const copyTimingButton = new CopyTimingButton(mainHeader);
-	
-	
-	
-	
-	document.addEventListener('click', (event) => {
-		if (event.target.closest('button.btn.btn-sm')) {
-			copyTimingButton.setInvisible()
-		}
-
-		if (event.target.closest('.contentList .answers__row')) {
-			const row = event.target.closest('.contentList .answers__row');
-			copyTimingButton.timing.studentId = row.querySelector('.answers__cell').textContent.trim();
-			copyTimingButton.timing.hwId = '';
-			copyTimingButton.timing.hwDateTime = '';
-
-			copyTimingButton.setInvisible()
-		}
-
-		if (event.target.closest('div.col-12 .answerList .answers__row')) {
-			if (copyTimingButton.timing.hwId !== '') {
-				copyTimingButton.setInvisible()
-			}
-
-			const row = event.target.closest('.answerList .answers__row');
-			copyTimingButton.timing.hwId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
-
-			if (copyTimingButton.timing.hwId === null || copyTimingButton.timing.hwId === '') {
-				copyTimingButton.timing.hwId = '***';
-			}
-
-			copyTimingButton.timing.HWDateTime = '';
-
-			//TODO: переделать в нормальный цикл
-			setTimeout(function() {
-
-				let answer = document.querySelectorAll('div.col .answers tr');
-
-				if (answer.length === 0) {
-					setTimeout(function() {
-						answer = document.querySelectorAll('div.col .answers tr');
-					}, 1000);
-				}
-
-				const dateTime = answer[answer.length - 1].textContent.trim();
-
-				if (dateTime !== undefined && dateTime !== null && dateTime !== '') {
-					copyTimingButton.timing.hwDateTime = formatDateTime(dateTime);
-					copyTimingButton.setVisible()
-				}
-			}, 500);
-		}
-	});
+	document.addEventListener('click', event => handleClickEvents(event, copyTimingButton));
 }
-
