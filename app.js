@@ -319,7 +319,10 @@ function formatDateTime(input) {
 }
 
 function handleClickEvents(event, copyTimingButton) {
-	if (event.target.closest('button.btn.btn-sm')) {
+	if (
+		event.target.closest('button.btn.btn-sm') || 
+		event.target.closest('div.col button.btn.btn-success')
+	) {
 		copyTimingButton.setInvisible();
 	}
 
