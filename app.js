@@ -353,7 +353,6 @@ function handleClickHWList(event, copyTimingButton) {
 		copyTimingButton.timing.hwId = '***';
 	}
 
-	copyTimingButton.timing.dateTime = '';
 	searchDateTime(copyTimingButton);
 }
 
@@ -367,9 +366,16 @@ function searchDateTime(copyTimingButton) {
 			const dateTime = answer[answer.length - 1].textContent.trim();
 
 			if (dateTime && dateTime !== '') {
-				copyTimingButton.timing.dateTime = formatDateTime(dateTime);
-				copyTimingButton.setVisible();
-				clearInterval(intervalId);
+				const newDateTime = formatDateTime(dateTime);
+				
+				console.log(newDateTime);
+				console.log(copyTimingButton.timing.dateTime);
+				
+				if (copyTimingButton.timing.dateTime !== newDateTime) {
+					copyTimingButton.timing.dateTime = newDateTime;
+					copyTimingButton.setVisible();
+					clearInterval(intervalId);
+				}
 			}
 		}
 
