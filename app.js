@@ -326,7 +326,7 @@ function handleClickEvents(event, copyTimingButton) {
 	if (event.target.closest('.contentList .answers__row')) {
 		handleClickStudentList(event, copyTimingButton);
 	}
-	
+
 	if (event.target.closest('div.col-12 .answerList .answers__row')) {
 		handleClickHWList(event, copyTimingButton);
 	}
@@ -367,10 +367,10 @@ function searchDateTime(copyTimingButton) {
 
 			if (dateTime && dateTime !== '') {
 				const newDateTime = formatDateTime(dateTime);
-				
+
 				console.log(newDateTime);
 				console.log(copyTimingButton.timing.dateTime);
-				
+
 				if (copyTimingButton.timing.dateTime !== newDateTime) {
 					copyTimingButton.timing.dateTime = newDateTime;
 					copyTimingButton.setVisible();
@@ -386,7 +386,6 @@ function searchDateTime(copyTimingButton) {
 		}
 	}, 1000);
 }
-
 
 
 // Main
