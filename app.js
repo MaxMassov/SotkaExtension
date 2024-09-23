@@ -81,21 +81,21 @@ class ImageProperties {
 function initImageKeyHandler(image) {
 	document.addEventListener('keydown', (event) => {
 		const keyHandlers = {
-			65: () => image.transformImage(5, 0),			// A
-			68: () => image.transformImage(-5, 0),		// D
-			87: () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5),  	// W
+			65: () => image.transformImage(5, 0), // A
+			68: () => image.transformImage(-5, 0), // D
+			87: () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5), // W
 			83: () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5), // S
-			81: () => image.rotateImage(event.shiftKey ? -5 : -90), 								// Q
-			69: () => image.rotateImage(event.shiftKey ? 5 : 90), 	    						// E
-			82: () => image.resetProperties(), 																			// R
-			90: () => image.modifyContrast(event.shiftKey ? -10 : 10), 			// Z
-			88: () => image.modifyBrightness(event.shiftKey ? -10 : 10),	// X
-			70: () => image.toggleGrayscale(), 			// F
-			49: () => image.applyFilter(140, 110), 	// 1
-			50: () => image.applyFilter(170, 120), 	// 2
-			51: () => image.applyFilter(200, 130), 	// 3
-			52: () => image.applyFilter(250, 130),	// 4
-			53: () => image.applyFilter(280, 140),	// 5
+			81: () => image.rotateImage(event.shiftKey ? -5 : -90), // Q
+			69: () => image.rotateImage(event.shiftKey ? 5 : 90), // E
+			82: () => image.resetProperties(), // R
+			90: () => image.modifyContrast(event.shiftKey ? -10 : 10), // Z
+			88: () => image.modifyBrightness(event.shiftKey ? -10 : 10), // X
+			70: () => image.toggleGrayscale(), // F
+			49: () => image.applyFilter(140, 110), // 1
+			50: () => image.applyFilter(170, 120), // 2
+			51: () => image.applyFilter(200, 130), // 3
+			52: () => image.applyFilter(250, 130), // 4
+			53: () => image.applyFilter(280, 140), // 5
 		};
 
 		const handler = keyHandlers[event.which];
@@ -320,7 +320,7 @@ function formatDateTime(input) {
 
 function handleClickEvents(event, copyTimingButton) {
 	if (
-		event.target.closest('button.btn.btn-sm') || 
+		event.target.closest('button.btn.btn-sm') ||
 		event.target.closest('div.col button.btn.btn-success')
 	) {
 		copyTimingButton.setInvisible();
@@ -370,7 +370,7 @@ function searchDateTime(copyTimingButton) {
 
 			if (dateTime && dateTime !== '') {
 				const newDateTime = formatDateTime(dateTime);
-				
+
 				if (copyTimingButton.timing.dateTime !== newDateTime) {
 					copyTimingButton.timing.dateTime = newDateTime;
 					copyTimingButton.setVisible();
