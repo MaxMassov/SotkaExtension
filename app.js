@@ -370,10 +370,7 @@ function searchDateTime(copyTimingButton) {
 
 			if (dateTime && dateTime !== '') {
 				const newDateTime = formatDateTime(dateTime);
-
-				console.log(newDateTime);
-				console.log(copyTimingButton.timing.dateTime);
-
+				
 				if (copyTimingButton.timing.dateTime !== newDateTime) {
 					copyTimingButton.timing.dateTime = newDateTime;
 					copyTimingButton.setVisible();
