@@ -90,7 +90,7 @@ https://github.com/user-attachments/assets/8043342c-9e8c-46e8-a7db-eb26f49a4069
 
 ### Установка для Яндекс Браузера
 
-[![Static Badge](https://img.shields.io/badge/download-yandex_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/release/SotkaExtension-yandex.zip)
+[![Static Badge](https://img.shields.io/badge/download-yandex_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/v1.3/SotkaExtension-yandex.zip)
 
 Для Яндекс Браузера процесс очень простой.
 1) Распакуйте архив в удобное место
@@ -101,7 +101,7 @@ https://github.com/user-attachments/assets/8043342c-9e8c-46e8-a7db-eb26f49a4069
 
 ### Установка для Google Chrome
 
-[![Static Badge](https://img.shields.io/badge/download-chrome_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/release/SotkaExtension-chrome.zip)
+[![Static Badge](https://img.shields.io/badge/download-chrome_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/v1.3/SotkaExtension-chrome.zip)
 
 С гуглом немножечко больше действий:
 
