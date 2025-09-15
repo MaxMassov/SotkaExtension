@@ -124,6 +124,7 @@ function setModalStyles() {
 
 	const contentListBodyElements = document.querySelectorAll('.modal-body .contentList__body');
 	contentListBodyElements.forEach((element) => {
+		element.style.overflow = 'auto';
 		element.style.resize = 'both';
 		element.style.minHeight = '37rem';
 		element.style.minWidth = '40rem';
@@ -396,7 +397,7 @@ if (window.location.href.includes('https://platform.sotkaonline.ru/storage')) {
 	initImageKeyHandler(image);
 }
 
-if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/verifier')) {
+if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/homeworks')) {
 	setModalStyles();
 	closeModalOnEscape();
 	initializeResizeObservers();
