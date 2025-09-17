@@ -81,24 +81,24 @@ class ImageProperties {
 function initImageKeyHandler(image) {
 	document.addEventListener('keydown', (event) => {
 		const keyHandlers = {
-			65: () => image.transformImage(5, 0), // A
-			68: () => image.transformImage(-5, 0), // D
-			87: () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5), // W
-			83: () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5), // S
-			81: () => image.rotateImage(event.shiftKey ? -5 : -90), // Q
-			69: () => image.rotateImage(event.shiftKey ? 5 : 90), // E
-			82: () => image.resetProperties(), // R
-			90: () => image.modifyContrast(event.shiftKey ? -10 : 10), // Z
-			88: () => image.modifyBrightness(event.shiftKey ? -10 : 10), // X
-			70: () => image.toggleGrayscale(), // F
-			49: () => image.applyFilter(140, 110), // 1
-			50: () => image.applyFilter(170, 120), // 2
-			51: () => image.applyFilter(200, 130), // 3
-			52: () => image.applyFilter(250, 130), // 4
-			53: () => image.applyFilter(280, 140), // 5
+			'KeyA': () => image.transformImage(5, 0),                // A
+			'KeyD': () => image.transformImage(-5, 0),               // D
+			'KeyW': () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5), // W
+			'KeyS': () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5), // S
+			'KeyQ': () => image.rotateImage(event.shiftKey ? -5 : -90), // Q
+			'KeyE': () => image.rotateImage(event.shiftKey ? 5 : 90), // E
+			'KeyR': () => image.resetProperties(), // R
+			'KeyZ': () => image.modifyContrast(event.shiftKey ? -10 : 10), // Z
+			'KeyX': () => image.modifyBrightness(event.shiftKey ? -10 : 10), // X
+			'KeyF': () => image.toggleGrayscale(), // F
+			'Digit1': () => image.applyFilter(140, 110), // 1
+			'Digit2': () => image.applyFilter(170, 120), // 2
+			'Digit3': () => image.applyFilter(200, 130), // 3
+			'Digit4': () => image.applyFilter(250, 130), // 4
+			'Digit5': () => image.applyFilter(280, 140), // 5
 		};
 
-		const handler = keyHandlers[event.which];
+		const handler = keyHandlers[event.code];
 		if (handler) {
 			handler();
 		}
