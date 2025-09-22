@@ -33,7 +33,7 @@ SotkaExtension представляет собой расширение для �
 > Хотя тайминги генерируются автоматически, будьте внимательны, не забывайте перепроверять их
 > и обращайте внимание на особые случаи, например, когда домашнее задание включает дополнительные номера.
 
-https://github.com/user-attachments/assets/d2615c61-1f1c-4f96-8684-f9776ebf2532
+https://github.com/user-attachments/assets/6e4d0ad9-83e2-4f97-8523-26ce33f59912
 
 ### Работа с фотографиями
 
@@ -90,7 +90,7 @@ https://github.com/user-attachments/assets/8043342c-9e8c-46e8-a7db-eb26f49a4069
 
 ### Установка для Яндекс Браузера
 
-[![Static Badge](https://img.shields.io/badge/download-yandex_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/v1.3/SotkaExtension-yandex.zip)
+[![Static Badge](https://img.shields.io/badge/download-yandex_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/v1.4/SotkaExtension-yandex-v1.4.zip)
 
 Для Яндекс Браузера процесс очень простой.
 1) Распакуйте архив в удобное место
@@ -101,7 +101,7 @@ https://github.com/user-attachments/assets/8043342c-9e8c-46e8-a7db-eb26f49a4069
 
 ### Установка для Google Chrome
 
-[![Static Badge](https://img.shields.io/badge/download-chrome_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/v1.3/SotkaExtension-chrome.zip)
+[![Static Badge](https://img.shields.io/badge/download-chrome_version-blue)](https://github.com/milkylake/SotkaExtension/releases/download/v1.4/SotkaExtension-chrome-v1.4.zip)
 
 С гуглом немножечко больше действий:
 

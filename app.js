@@ -81,24 +81,24 @@ class ImageProperties {
 function initImageKeyHandler(image) {
 	document.addEventListener('keydown', (event) => {
 		const keyHandlers = {
-			65: () => image.transformImage(5, 0), // A
-			68: () => image.transformImage(-5, 0), // D
-			87: () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5), // W
-			83: () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5), // S
-			81: () => image.rotateImage(event.shiftKey ? -5 : -90), // Q
-			69: () => image.rotateImage(event.shiftKey ? 5 : 90), // E
-			82: () => image.resetProperties(), // R
-			90: () => image.modifyContrast(event.shiftKey ? -10 : 10), // Z
-			88: () => image.modifyBrightness(event.shiftKey ? -10 : 10), // X
-			70: () => image.toggleGrayscale(), // F
-			49: () => image.applyFilter(140, 110), // 1
-			50: () => image.applyFilter(170, 120), // 2
-			51: () => image.applyFilter(200, 130), // 3
-			52: () => image.applyFilter(250, 130), // 4
-			53: () => image.applyFilter(280, 140), // 5
+			'KeyA': () => image.transformImage(5, 0),
+			'KeyD': () => image.transformImage(-5, 0),
+			'KeyW': () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5),
+			'KeyS': () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5),
+			'KeyQ': () => image.rotateImage(event.shiftKey ? -5 : -90),
+			'KeyE': () => image.rotateImage(event.shiftKey ? 5 : 90),
+			'KeyR': () => image.resetProperties(),
+			'KeyZ': () => image.modifyContrast(event.shiftKey ? -10 : 10),
+			'KeyX': () => image.modifyBrightness(event.shiftKey ? -10 : 10),
+			'KeyF': () => image.toggleGrayscale(),
+			'Digit1': () => image.applyFilter(140, 110),
+			'Digit2': () => image.applyFilter(170, 120),
+			'Digit3': () => image.applyFilter(200, 130),
+			'Digit4': () => image.applyFilter(250, 130),
+			'Digit5': () => image.applyFilter(280, 140),
 		};
 
-		const handler = keyHandlers[event.which];
+		const handler = keyHandlers[event.code];
 		if (handler) {
 			handler();
 		}
@@ -124,6 +124,7 @@ function setModalStyles() {
 
 	const contentListBodyElements = document.querySelectorAll('.modal-body .contentList__body');
 	contentListBodyElements.forEach((element) => {
+		element.style.overflow = 'auto';
 		element.style.resize = 'both';
 		element.style.minHeight = '37rem';
 		element.style.minWidth = '40rem';
@@ -198,14 +199,17 @@ function initializeResizeObservers() {
 }
 
 
-// copy timing button
+// Copy timing button
 
-function getMainHeader() {
-	const mainHeader = document.querySelector('div.col-12.mb-3');
-	mainHeader.style.display = 'flex';
-	mainHeader.style.justifyContent = 'space-between';
+function getButtonPlace() {
+	const place = document.querySelector('div.modal.show .modal-body .mb-2');
+	if (!place) return null;
 
-	return mainHeader;
+	place.style.display = 'inline-flex';
+	place.style.justifyContent = 'space-between';
+	place.style.alignItems = 'center';
+
+	return place;
 }
 
 class CopyTimingButton {
@@ -247,16 +251,17 @@ class CopyTimingButton {
 	initMessage() {
 		this.message = document.createElement('div');
 		this.message.innerText = 'Скопировано!';
-		this.message.style.position = 'absolute';
-		this.message.style.top = '-46px';
+		this.message.style.position = 'fixed';
 		this.message.style.padding = '7px 20px';
 		this.message.style.backgroundColor = '#333';
 		this.message.style.color = '#fff';
 		this.message.style.borderRadius = '10px';
 		this.message.style.opacity = '0';
 		this.message.style.transition = 'opacity 0.5s ease';
-		this.message.style.zIndex = '1000';
-		this.button.appendChild(this.message);
+		this.message.style.zIndex = '99999';
+		this.message.style.pointerEvents = 'none';
+		this.message.style.whiteSpace = 'nowrap';
+		document.body.appendChild(this.message);
 	}
 
 	addEventListeners() {
@@ -274,6 +279,12 @@ class CopyTimingButton {
 
 		this.button.addEventListener('mouseup', () => {
 			this.button.style.transform = 'translateY(0)';
+
+			const rect = this.button.getBoundingClientRect();
+
+			this.message.style.left = `${rect.left + rect.width / 2}px`;
+			this.message.style.top = `${rect.top - 8}px`;
+			this.message.style.transform = 'translate(-50%, -100%)';
 			this.message.style.opacity = '1';
 
 			setTimeout(() => {
@@ -303,11 +314,11 @@ class CopyTimingButton {
 }
 
 function formatDateTime(input) {
-	const regex = /дата:\s(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/;
+	const regex = /(\d{1,2})\.(\d{1,2})\.(\d{4}) (\d{1,2}):(\d{2})/;
 	const match = input.match(regex);
 
 	if (match) {
-		const [_, year, month, day, hours, minutes] = match;
+		const [_, day, month, year, hours, minutes] = match;
 
 		const formattedDate = `${day}.${month}.${year}`;
 		const formattedTime = `${hours}:${minutes}`;
@@ -320,73 +331,48 @@ function formatDateTime(input) {
 
 function handleClickEvents(event, copyTimingButton) {
 	if (
-		event.target.closest('button.btn.btn-sm') ||
-		event.target.closest('div.col button.btn.btn-success')
+		event.target.closest('button.btn-close') ||             // Close window btn
+		event.target.closest('button.btn.btn-success') ||       // Accept task btn
+		event.target.closest('button.btn.btn-outline-danger')   // No answer btn
 	) {
 		copyTimingButton.setInvisible();
 	}
 
-	if (event.target.closest('.contentList .answers__row')) {
+	if (event.target.closest('.answer.clickable')) {
 		handleClickStudentList(event, copyTimingButton);
-	}
-
-	if (event.target.closest('div.col-12 .answerList .answers__row')) {
-		handleClickHWList(event, copyTimingButton);
 	}
 }
 
 function handleClickStudentList(event, copyTimingButton) {
-	const row = event.target.closest('.contentList .answers__row');
-	copyTimingButton.timing.studentId = row.querySelector('.answers__cell').textContent.trim();
-	copyTimingButton.timing.hwId = '';
-	copyTimingButton.timing.dateTime = '';
-
-	copyTimingButton.setInvisible();
-}
-
-function handleClickHWList(event, copyTimingButton) {
-	if (copyTimingButton.timing.hwId !== '') {
-		copyTimingButton.setInvisible();
+    const clicked = event.target.closest('.answer.clickable');
+	if (!clicked) {
+		console.error("Answer not found.");
+		return;
 	}
 
-	const row = event.target.closest('.answerList .answers__row');
-	copyTimingButton.timing.hwId = row.querySelectorAll('.answers__cell')[1].textContent.toLowerCase();
+	const innerTable = clicked.closest('table');
+	const row = innerTable ? innerTable.closest('tr') : clicked.closest('tr');
+
+	if (!row) {
+		console.error("Row not found.");
+		return;
+	}
+
+	copyTimingButton.timing.hwId = row.querySelector('td:first-child > span:last-of-type')?.textContent.trim().toLowerCase();
+	copyTimingButton.timing.studentId = row.querySelector('code.id span').textContent.trim();
+	const dateTime = row.querySelector('td:nth-child(6) span').textContent.trim();
 
 	if (copyTimingButton.timing.hwId === null || copyTimingButton.timing.hwId === '') {
 		copyTimingButton.timing.hwId = '***';
 	}
 
-	searchDateTime(copyTimingButton);
+	if (dateTime && dateTime !== '') {
+		copyTimingButton.timing.dateTime = formatDateTime(dateTime);
+	} else {
+		console.error('Homework date and time not found');
+	}
+	copyTimingButton.setVisible();
 }
-
-function searchDateTime(copyTimingButton) {
-	let attempts = 0;
-	const maxAttempts = 10;
-	const intervalId = setInterval(() => {
-		let answer = document.querySelectorAll('div.col .answers tr');
-
-		if (answer.length >= 2) {
-			const dateTime = answer[answer.length - 1].textContent.trim();
-
-			if (dateTime && dateTime !== '') {
-				const newDateTime = formatDateTime(dateTime);
-
-				if (copyTimingButton.timing.dateTime !== newDateTime) {
-					copyTimingButton.timing.dateTime = newDateTime;
-					copyTimingButton.setVisible();
-					clearInterval(intervalId);
-				}
-			}
-		}
-
-		attempts += 1;
-		if (attempts >= maxAttempts) {
-			clearInterval(intervalId);
-			console.error('Homework date and time not found');
-		}
-	}, 1000);
-}
-
 
 // Main
 
@@ -396,12 +382,12 @@ if (window.location.href.includes('https://platform.sotkaonline.ru/storage')) {
 	initImageKeyHandler(image);
 }
 
-if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/verifier')) {
+if (window.location.href.includes('https://admin.sotkaonline.ru/admin/study/homeworks')) {
 	setModalStyles();
 	closeModalOnEscape();
 	initializeResizeObservers();
 
-	const mainHeader = getMainHeader();
-	const copyTimingButton = new CopyTimingButton(mainHeader);
+	const place = getButtonPlace();
+	const copyTimingButton = new CopyTimingButton(place);
 	document.addEventListener('click', event => handleClickEvents(event, copyTimingButton));
 }
