@@ -81,21 +81,21 @@ class ImageProperties {
 function initImageKeyHandler(image) {
 	document.addEventListener('keydown', (event) => {
 		const keyHandlers = {
-			'KeyA': () => image.transformImage(5, 0),                // A
-			'KeyD': () => image.transformImage(-5, 0),               // D
-			'KeyW': () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5), // W
-			'KeyS': () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5), // S
-			'KeyQ': () => image.rotateImage(event.shiftKey ? -5 : -90), // Q
-			'KeyE': () => image.rotateImage(event.shiftKey ? 5 : 90), // E
-			'KeyR': () => image.resetProperties(), // R
-			'KeyZ': () => image.modifyContrast(event.shiftKey ? -10 : 10), // Z
-			'KeyX': () => image.modifyBrightness(event.shiftKey ? -10 : 10), // X
-			'KeyF': () => image.toggleGrayscale(), // F
-			'Digit1': () => image.applyFilter(140, 110), // 1
-			'Digit2': () => image.applyFilter(170, 120), // 2
-			'Digit3': () => image.applyFilter(200, 130), // 3
-			'Digit4': () => image.applyFilter(250, 130), // 4
-			'Digit5': () => image.applyFilter(280, 140), // 5
+			'KeyA': () => image.transformImage(5, 0),
+			'KeyD': () => image.transformImage(-5, 0),
+			'KeyW': () => event.shiftKey ? image.scaleImage(0.3) : image.transformImage(0, 5),
+			'KeyS': () => event.shiftKey ? image.scaleImage(-0.3) : image.transformImage(0, -5),
+			'KeyQ': () => image.rotateImage(event.shiftKey ? -5 : -90),
+			'KeyE': () => image.rotateImage(event.shiftKey ? 5 : 90),
+			'KeyR': () => image.resetProperties(),
+			'KeyZ': () => image.modifyContrast(event.shiftKey ? -10 : 10),
+			'KeyX': () => image.modifyBrightness(event.shiftKey ? -10 : 10),
+			'KeyF': () => image.toggleGrayscale(),
+			'Digit1': () => image.applyFilter(140, 110),
+			'Digit2': () => image.applyFilter(170, 120),
+			'Digit3': () => image.applyFilter(200, 130),
+			'Digit4': () => image.applyFilter(250, 130),
+			'Digit5': () => image.applyFilter(280, 140),
 		};
 
 		const handler = keyHandlers[event.code];
@@ -199,10 +199,9 @@ function initializeResizeObservers() {
 }
 
 
-// copy timing button
+// Copy timing button
 
 function getButtonPlace() {
-	// place button near datetime row of the window
 	const place = document.querySelector('div.modal.show .modal-body .mb-2');
 	if (!place) return null;
 
@@ -252,15 +251,15 @@ class CopyTimingButton {
 	initMessage() {
 		this.message = document.createElement('div');
 		this.message.innerText = 'Скопировано!';
-		this.message.style.position = 'fixed';   // stays above modal
+		this.message.style.position = 'fixed';
 		this.message.style.padding = '7px 20px';
 		this.message.style.backgroundColor = '#333';
 		this.message.style.color = '#fff';
 		this.message.style.borderRadius = '10px';
 		this.message.style.opacity = '0';
 		this.message.style.transition = 'opacity 0.5s ease';
-		this.message.style.zIndex = '99999';    // above modal
-		this.message.style.pointerEvents = 'none'; // do not block clicks
+		this.message.style.zIndex = '99999';
+		this.message.style.pointerEvents = 'none';
 		this.message.style.whiteSpace = 'nowrap';
 		document.body.appendChild(this.message);
 	}
@@ -281,18 +280,13 @@ class CopyTimingButton {
 		this.button.addEventListener('mouseup', () => {
 			this.button.style.transform = 'translateY(0)';
 
-			// get button’s position in viewport
 			const rect = this.button.getBoundingClientRect();
 
-			// position message just above the button
 			this.message.style.left = `${rect.left + rect.width / 2}px`;
-			this.message.style.top = `${rect.top - 8}px`; // a bit above
-			this.message.style.transform = 'translate(-50%, -100%)'; // center horizontally above button
-
-			// show bubble
+			this.message.style.top = `${rect.top - 8}px`;
+			this.message.style.transform = 'translate(-50%, -100%)';
 			this.message.style.opacity = '1';
 
-			// hide after 1s
 			setTimeout(() => {
 				this.message.style.opacity = '0';
 			}, 1000);
@@ -344,20 +338,18 @@ function handleClickEvents(event, copyTimingButton) {
 		copyTimingButton.setInvisible();
 	}
 
-	if (event.target.closest('.answer.clickable')) {     // if the answer was clicked
+	if (event.target.closest('.answer.clickable')) {
 		handleClickStudentList(event, copyTimingButton);
 	}
 }
 
 function handleClickStudentList(event, copyTimingButton) {
-	// identify the answer was clicked
     const clicked = event.target.closest('.answer.clickable');
 	if (!clicked) {
 		console.error("Answer not found.");
 		return;
 	}
 
-	// inner table is inside the outer <td>; the table's ancestor <tr> is the outer row we want
 	const innerTable = clicked.closest('table');
 	const row = innerTable ? innerTable.closest('tr') : clicked.closest('tr');
 
@@ -366,7 +358,6 @@ function handleClickStudentList(event, copyTimingButton) {
 		return;
 	}
 
-	// parsing the row
 	copyTimingButton.timing.hwId = row.querySelector('td:first-child > span:last-of-type')?.textContent.trim().toLowerCase();
 	copyTimingButton.timing.studentId = row.querySelector('code.id span').textContent.trim();
 	const dateTime = row.querySelector('td:nth-child(6) span').textContent.trim();
